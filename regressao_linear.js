@@ -52,18 +52,18 @@ Papa.parse(file, {
         model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
         model.compile({ optimizer: 'sgd', loss: 'meanSquaredError' });
 
-        // 🔹 Treinar modelo
+        //  Treinar modelo
         async function trainModel() {
             console.log('Treinando modelo...');
-            await model.fit(xs, ys, { epochs: 10 }); // Mais épocas para melhor ajuste
+            await model.fit(xs, ys, { epochs: 30 }); 
             console.log('Treinamento concluído');
 
-            // 🔹 Fazer uma previsão
+            //  Fazer uma previsão
             const testValue = (10 - xMin) / (xMax - xMin); // Normalizar entrada
             const prediction = model.predict(tf.tensor2d([[testValue]], [1, 1]));
             prediction.print();
 
-            // 🔹 Coletar pesos da equação da reta y = ax + b
+            // Coletar pesos da equação da reta y = ax + b
             const weights = model.getWeights();
             const aTensor = await weights[0].array(); // Inclinação (a)
             const bTensor = await weights[1].array(); // Intercepto (b)
@@ -73,7 +73,7 @@ Papa.parse(file, {
 
             console.log(`Equação da reta: y = ${a.toFixed(4)}x + ${b.toFixed(4)}`);
 
-            // 🔹 Calcular R²
+            // Calcular R²
             const yPredicted = xValues.map(x => a * x + b);
             const ssTotal = yValues.reduce((sum, y) => sum + Math.pow(y - (yValues.reduce((a, b) => a + b) / yValues.length), 2), 0);
             const ssResidual = yValues.reduce((sum, y, i) => sum + Math.pow(y - yPredicted[i], 2), 0);
